@@ -1,0 +1,74 @@
+﻿@model messenger2.DataLayer.ViewModels.Contacts.UsersBriefInfoViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Друзья";
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<input type="hidden" id="RequestVerificationToken"
+       name="RequestVerificationToken" value="@requestToken">
+
+
+<nav class="navbar navbar-light bg-light">
+    <form class="container-fluid justify-content-between">
+        <a class="btn btn-outline mr-2" style="border-color: #87CEFA;" type="button" asp-area="" asp-controller="Contacts" asp-action="Friends">Друзья</a>
+        <a class="btn btn-outline mr-2" style="border-color: #87CEFA;" type="button" asp-area="" asp-controller="Contacts" asp-action="Invitations">Приглашения</a>
+        <a class="btn btn-outline mr-2" style="border-color: #87CEFA;" type="button" asp-area="" asp-controller="Contacts" asp-action="AddFriend">Добавить друга</a>
+    </form>
+</nav>
+
+@if (Model.StatusCode==0)
+{
+    <div class="container-fluid">
+    <ul class="list-group list-group-flush friend_list">
+        @foreach (var UserInfo in Model.UsersInfo)
+            {
+                <li class="list-group-item" name="@UserInfo.UserId">@UserInfo.Nickname<div class="float-right"><i class="bi bi-chat-left-dots chat"></i><i class="bi bi-x-lg delete_friend"></i></div></li>
+            }
+    </ul>
+    </div>
+}
+else 
+{
+    <div>@Model.Description</div>
+}
+
+
+
+<div class="container-fluid">
+<ul class="list-group list-group-flush">
+        <li class="list-group-item">Cras justo odio <div class="float-right"><i class="bi bi-chat-left-dots"></i><i class="bi bi-x-lg"></i></div></li>
+  <li class="list-group-item">Dapibus ac facilisis in</li>
+  <li class="list-group-item">Morbi leo risus</li>
+  <li class="list-group-item">Porta ac consectetur ac</li>
+  <li class="list-group-item">Vestibulum at eros</li>
+</ul>
+</div>
+
+<button id="button1">Click</button>
+<div id="ii" name="eee">    </div>
+<div id="emptyDiv"></div>
+
+@section scripts{
+    <script>
+        $(document).ready(function(){
+             $("#button1").on('click',function(){
+                 $.ajax({
+            url: '/Contacts/DeleteFriend',
+        data: JSON.stringify(data),
+            headers:
+        {
+            "RequestVerificationToken": $('#RequestVerificationToken').val()
+        },
+        type: "POST",
+            dataType: "json",
+                contentType: "application/json"
+    });
+
+
+             });
+             });
+
+    </script>
+} 
