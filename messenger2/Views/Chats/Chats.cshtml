@@ -1,0 +1,121 @@
+﻿@model messenger2.DataLayer.ViewModels.Chats.ChatsViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Чаты";
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+<input type="hidden" id="RequestVerificationToken"
+       name="RequestVerificationToken" value="@requestToken">
+
+@if (Model.StatusCode == 200)
+{
+    <div class="row chats_main_container">
+        <div class="col chat_list_col">
+            <div class="chat_list_container">
+                <div class="chat_list_caption">
+                    Личные
+                </div>
+                <div class="chat_list">
+                    <ul class="list-group list-group-flush personal_chat_list">
+                        @foreach (var ChatInfo in Model.ChatList.Personal_chats)
+                        {
+                            <li class="list-group-item chat" name="@ChatInfo.ChatId" onclick="LoadSelectedChat(@ChatInfo.ChatId)">
+                                <span class="chat_name">@ChatInfo.Name</span>
+                                <span class="last_message_date">@ChatInfo.DateLastMessage</span>
+                                <br>
+                                <span class="last_message_text">@ChatInfo.TextLastMessage</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="chat_list_container">
+                <div class="chat_list_caption">
+                    Групповые
+                </div>
+                <div class="chat_list">
+                    <ul class="list-group list-group-flush group_chats_list">
+                        @foreach (var ChatInfo in Model.ChatList.Group_chats)
+                        {
+                            <li class="list-group-item chat" name="@ChatInfo.ChatId" onclick="LoadSelectedChat(@ChatInfo.ChatId)">
+                                <span class="chat_name">@ChatInfo.Name</span>
+                                <span class="last_message_date">@ChatInfo.DateLastMessage</span>
+                                <br>
+                                <span class="last_message_text">@ChatInfo.TextLastMessage</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="create_chat_button">
+                Создать чат
+            </div>
+        </div>
+
+        <div class="col-6 chat_col">
+            <div class="chat_caption">
+            </div>
+            <div class="place_for_messages">
+                <div class="message_list_container">
+                    <ul class="list-group list-group-flush message_list" name="empty_message_list">
+                        <li class="list-group-item message system_message" name="empty_system_message">
+                            <span class="message_text"></span>
+                        </li>
+                        <li class="list-group-item message message my_message" name="empty_my_message">
+                            <span class="nickname"></span>
+                            <span class="message_date"></span>
+                            <br>
+                            <span class="message_text"></span>
+                        </li>
+                         <li class="list-group-item message user_message" name="empty_user_message">
+                            <span class="nickname"></span>
+                            <span class="message_date"></span>
+                            <br>
+                            <span class="message_text"></span>
+                        <li>
+                    </ul>
+                    @if (Model.SelectedChat != null) 
+                     {
+                        await Html.RenderPartialAsync("_SelectedChat", Model.SelectedChat);
+                     }
+                     else
+                    {
+                        <button type="button" class="btn btn-secondary btn-sm mx-auto" id="load_more_messages">Загрузить больше</button>
+                        <ul class="list-group list-group-flush message_list" name="" id="selected_chat_messages">
+                            <li class="list-group-item message message my_message" name="">
+                            <span class="nickname"></span>
+                            <span class="message_date">ddd</span>
+                            <br>
+                            <span class="message_text">aaa</span>
+                        </li>
+                         <li class="list-group-item message user_message" name="">
+                            <span class="nickname">ddd</span>
+                            <span class="message_date"></span>
+                            <br>
+                            <span class="message_text">aaa</span>
+                        <li>
+                        </ul>
+                    }
+                </div>
+            </div>
+            <div class="send_message_container">
+                <textarea id="text_new_message"></textarea>
+                <span class="send_message_icon">
+                    <i class="bi bi-send" id="send_message_btn"></i>
+                </span>
+            </div>
+        </div>
+        <div class="col chat_members_col">
+            <div class="chat_members_caption">
+                Участники
+            </div>
+            <div class="chat_members_list_container">
+                @if (Model.SelectedChat != null) 
+                     {
+                        await Html.RenderPartialAsync("_ChatMembers", Model.SelectedChat);
+                     }
+            </div>
+        </div>
+    </div>
+}

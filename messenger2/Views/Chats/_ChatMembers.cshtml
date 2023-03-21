@@ -1,0 +1,9 @@
+﻿@model messenger2.DataLayer.DTO.ChatDTO
+<ul class="list-group list-group-flush member_list">
+    @foreach (var member in Model.Members)
+    {
+        <li class="list-group-item member" name="@member.UserId">
+            <span class="nickname">@member.Nickname</span>
+        </li>
+    }
+</ul>

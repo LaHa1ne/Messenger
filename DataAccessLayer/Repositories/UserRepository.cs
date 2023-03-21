@@ -10,7 +10,7 @@ using messenger2.DataLayer.DTO;
 
 namespace DataAccessLayer.Repositories
 {
-    public class UserRepository : BaseRepository<User>, IUserRepository
+    public class UserRepository : BaseRepository<User>,IUserRepository
     {
         public UserRepository(ApplicationDbContext db) : base(db)
         {
@@ -46,44 +46,49 @@ namespace DataAccessLayer.Repositories
             return user.Friends.Select(u=> new UserBriefInfoDTO(u.UserId,u.Nickname)).ToList();
         }
 
-        public async Task<ICollection<User>> GetSenders(int UserId)
+        public async Task<IEnumerable<UserBriefInfoDTO>> GetSenders(int UserId)
         {
-            var user = await GetByUserId(UserId);
-            return user.Senders;
+            var user = await _db.Users.Include(u => u.Senders).FirstOrDefaultAsync(u => u.UserId == UserId);
+            return user.Senders.Select(u => new UserBriefInfoDTO(u.UserId, u.Nickname)).ToList();
         }
 
-        public async Task AcceptFriendRequest(int UserId, int SenderId)
+        public async Task<int> AcceptFriendRequest(int UserId, int SenderId)
         {
-            User user1 = await GetByUserId(UserId);
-            User user2 = await GetByUserId(SenderId);
-            user1.Senders.Remove(user2);
-            user2.Senders.Remove(user1);
-            user1.Friends.Add(user2);
-            user2.Friends.Add(user1);
+            User user = await _db.Users.Include(u => u.Friends).Include(u=>u.Senders).FirstOrDefaultAsync(u => u.UserId == UserId);
+            User sender = await _db.Users.Include(u => u.Friends).Include(u => u.Senders).FirstOrDefaultAsync(u => u.UserId == SenderId);
+            user.Senders.Remove(sender);
+            sender.Senders.Remove(user);
+            user.Friends.Add(sender);
+            sender.Friends.Add(user);
             await _db.SaveChangesAsync();
+            return user.Senders.Count;
         }
-        public async Task RejectFriendRequest(int UserId, int SenderId)
+        public async Task<int> RejectFriendRequest(int UserId, int SenderId)
         {
-            User user1 = await GetByUserId(UserId);
-            User user2 = await GetByUserId(SenderId);
-            user1.Senders.Remove(user2);
+            User user = await _db.Users.Include(u => u.Senders).FirstOrDefaultAsync(u => u.UserId == UserId);
+            User sender = await _db.Users.FirstOrDefaultAsync(u => u.UserId == SenderId);
+            user.Senders.Remove(sender);
             await _db.SaveChangesAsync();
+            return user.Senders.Count;
         }
 
-        public async Task SendFriendRequest(int SenderId, int UserId)
+        public async Task<bool> SendFriendRequest(int SenderId, string UserNickname)
         {
-            User user1 = await GetByUserId(SenderId);
-            User user2 = await GetByUserId(UserId);
-            user2.Senders.Add(user1);
+            User user = await _db.Users.Include(u => u.Senders).FirstOrDefaultAsync(u => u.Nickname== UserNickname);
+            if (user == null) { return false; }
+            User sender = await _db.Users.FirstOrDefaultAsync(u => u.UserId == SenderId);
+            user.Senders.Add(sender);
             await _db.SaveChangesAsync();
+            return true;
         }
-        public async Task DeleteFriend(int UserId, int FriendId)
+        public async Task<int> DeleteFriend(int UserId, int FriendId)
         {
-            User user1 = await GetByUserId(UserId);
-            User user2 = await GetByUserId(FriendId);
-            user1.Friends.Remove(user2);
-            user2.Friends.Remove(user1);
+            User user = await _db.Users.Include(u => u.Friends).FirstOrDefaultAsync(u => u.UserId == UserId);
+            User friend = await _db.Users.Include(u => u.Friends).FirstOrDefaultAsync(u => u.UserId == FriendId);
+            user.Friends.Remove(friend);
+            friend.Friends.Remove(user);
             await _db.SaveChangesAsync();
+            return user.Friends.Count;
         }
 
     }

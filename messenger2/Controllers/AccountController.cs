@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using DataAccessLayer.Repositories;
 
 namespace messenger2.Controllers
 {
@@ -24,8 +25,17 @@ namespace messenger2.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegistrationViewModel registrationModel)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) 
             {
+                var nicknameExists = await _accountService.IsUserExistsByNickname(registrationModel);
+                var emailExists = await _accountService.IsUserExistsByEmail(registrationModel);
+                if (nicknameExists.Data || emailExists.Data)
+                {
+                    if (nicknameExists.Data) ModelState.AddModelError(key: "Nickname", errorMessage: nicknameExists.Description);
+                    if (emailExists.Data) ModelState.AddModelError(key: "Email", errorMessage: emailExists.Description);
+                    return View(registrationModel);
+                }
+               
                 var response = await _accountService.Register(registrationModel);
                 if (response.StatusCode == DataLayer.Enums.StatusCode.OK)
                 {

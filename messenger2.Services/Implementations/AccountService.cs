@@ -23,6 +23,75 @@ namespace messenger2.Services.Implementations
             _userRepository = userRepository;
         }
 
+        public async Task<BaseRepsonse<bool>> IsUserExistsByNickname(RegistrationViewModel registrationModel)
+        {
+            try
+            {
+                var nicknameExists = await _userRepository.IsUserExistsByNickname(registrationModel.Nickname);
+                if (nicknameExists)
+                {
+                    return new BaseRepsonse<bool>()
+                    {
+                        Data = true,
+                        Description = "Имя пользователя уже занято",
+                        StatusCode = DataLayer.Enums.StatusCode.UserExists
+                    };
+                }
+
+                return new BaseRepsonse<bool>()
+                {
+                    Data = false,
+                    Description = "Имя пользователя не занято",
+                    StatusCode = DataLayer.Enums.StatusCode.OK
+                };
+            }
+
+            catch (Exception ex)
+            {
+                return new BaseRepsonse<bool>()
+                {
+                    Data=false,
+                    Description = ex.Message,
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+        }
+
+        public async Task<BaseRepsonse<bool>> IsUserExistsByEmail(RegistrationViewModel registrationModel)
+        {
+            try
+            {
+                var emailExists = await _userRepository.IsUserExistsByEmail(registrationModel.Email);
+                if (emailExists)
+                {
+                    return new BaseRepsonse<bool>()
+                    {
+                        Data = true,
+                        Description = "Эл. почта уже занята",
+                        StatusCode = DataLayer.Enums.StatusCode.UserExists
+                    };
+                }
+
+                return new BaseRepsonse<bool>()
+                {
+                    Data = false,
+                    Description = "Эл. почта не занята",
+                    StatusCode = DataLayer.Enums.StatusCode.OK
+                };
+            }
+
+            catch (Exception ex)
+            {
+                return new BaseRepsonse<bool>()
+                {
+                    Data = false,
+                    Description = ex.Message,
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+        }
+
+
         public async Task<BaseRepsonse<ClaimsIdentity>> Register(RegistrationViewModel registrationModel)
         {
             try

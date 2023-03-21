@@ -1,0 +1,39 @@
+﻿@model messenger2.DataLayer.DTO.ChatDTO
+@if (Model.HasMoreMessages)
+{
+    <button type="button" class="btn btn-secondary btn-sm mx-auto" style="display: block" id="load_more_messages">Загрузить больше</button>
+}
+else
+{
+    <button type="button" class="btn btn-secondary btn-sm mx-auto" id="load_more_messages">Загрузить больше</button>
+}
+<ul class="list-group list-group-flush message_list" name="@Model.ChatId" id="selected_chat_messages">
+        @foreach (var message in Model.Messages)
+        {
+            if (message.IsSystem)
+            {
+                <li class="list-group-item message system_message" name="@message.MessageId">
+                    <span class="message_text">@message.Text</span>
+                </li>
+            }
+            else if (message.IsMine)
+            {
+                <li class="list-group-item message message my_message" name="@message.MessageId">
+                    <span class="nickname">@message.Nickname</span>
+                    <span class="message_date">@message.Date</span>
+                    <br>
+                    <span class="message_text">@message.Text</span>
+                </li>
+            }
+            else
+            {
+                <li class="list-group-item message user_message" name="@message.MessageId">
+                    <span class="nickname">@message.Nickname</span>
+                    <span class="message_date">@message.Date</span>
+                    <br>
+                    <span class="message_text">@message.Text</span>
+                </li>
+            }
+        }
+</ul>
+

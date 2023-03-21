@@ -20,5 +20,6 @@ namespace DataLayer.Entities
         public int ChatCreatorId { get; set; }
         public virtual User ChatCreator { get; set; } = null!;
         public virtual ICollection<User> ChatMembers { get; set; }
+        public virtual ICollection<Message> ChatMessages { get; set; }
     }
 }

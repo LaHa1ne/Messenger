@@ -14,5 +14,23 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+
+}
+
+header{
+    height: 60px;
+}
+
+#main-navbar
+{
+    height:100%;
+}
+
+#main-container
+{
+    height:calc(100vh - 60px);
+}
+
+#render_container {
+    height: 100%;
 }

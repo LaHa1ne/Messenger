@@ -16,11 +16,11 @@ namespace DataAccessLayer.Interfaces
         Task<User> GetByUserId(int UserId);
         Task<User> GetByEmailAndPassword(string Email, string Password);
         Task<IEnumerable<UserBriefInfoDTO>> GetFriends(int UserId);
-        Task<ICollection<User>> GetSenders(int UserId);
-        Task AcceptFriendRequest(int UserId, int SenderId);
-        Task RejectFriendRequest(int UserId, int SenderId);
-        Task SendFriendRequest(int SenderId, int UserId);
-        Task DeleteFriend(int UserId, int FriendId);
+        Task<IEnumerable<UserBriefInfoDTO>> GetSenders(int UserId);
+        Task<int> AcceptFriendRequest(int UserId, int SenderId);
+        Task<int> RejectFriendRequest(int UserId, int SenderId);
+        Task<bool> SendFriendRequest(int SenderId, string UserNickname);
+        Task<int> DeleteFriend(int UserId, int FriendId);
 
     }
 }

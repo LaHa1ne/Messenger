@@ -7,28 +7,29 @@
 <div class="d-flex w-100 justify-content-center align-items-center" style="height: 100vh;">
     <div class="row bg-white rounded-3" style="padding:32px 118px;">
         <div>
-            <h2 class="mb-4 text-center text-dark fw-bold">Вход в аккаунт</h2>
+            <h2 class="mb-3 text-center text-dark fw-bold">Вход в аккаунт</h2>
 
             <form method="post" asp-controller="Account" asp-action="Login">
-                <div asp-validation-summary="ModelOnly">
+                <div asp-validation-summary="ModelOnly" class="warning">
                 </div>
-                <div class="mb-3">
+                <div class="mb-4">
                     <label asp-for="Email">Эл. почта</label>
-                    <span asp-validation-for="Email"></span>
                     <input asp-for="Email" type="email" class="form-control" placeholder="Введите email">
+                    <span asp-validation-for="Email" class="warning"></span>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-4">
                     <label asp-for="Password">Пароль</label>
-                    <span asp-validation-for="Password"></span>
                     <input asp-for="Password" type="password" class="form-control" placeholder="Введите пароль">
+                    <span asp-validation-for="Password" class="warning"></span>
+                </div>
+                <div class="d-flex justify-content-center mb-1">
+                    <button class="btn btn-primary btn-block" type="submit">Вход в аккаунт</button>
                 </div>
                 <div class="d-flex justify-content-between mb-5">
-                    <a class="d-block text-decoration-none" asp-action="Register" asp-controller="Account" style="color: #7B61FF !important;">Регистрация</a>
+                    <span>Нет аккаунта?</span><a class="d-block text-decoration-none" asp-action="Register" asp-controller="Account" style="color: #7B61FF !important;">Регистрация</a>
                 </div>
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-purple" type="submit">Войти</button>
-                </div>
+
             </form>
         </div>
     </div>

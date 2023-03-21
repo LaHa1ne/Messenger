@@ -6,35 +6,39 @@
 
 <div class="d-flex justify-content-center align-items-center" style="width: 100%; height: 100vh;">
     <div class="d-flex flex-column align-items-center bg-white px-5 py-3 rounded-3" style="width: 45%;">
-        <div class="d-flex flex-column align-items-center my-4">
+        <div class="d-flex flex-column align-items-center my-3">
             <h3 class="text-dark">Создание аккаунта</h3>
         </div>
-        <form asp-controller="Account" asp-action="Register" class="w-75" method="post">
-            <div asp-validation-summary="ModelOnly">
+        <form asp-controller="Account" asp-action="Register" class="w-50" method="post">
+            <div asp-validation-summary="ModelOnly" class="warning">
             </div>
-            <div class="mb-3">
+            <div class="mb-4">
                 <label asp-for="Nickname">Имя пользователя</label>
                 <input class="form-control" placeholder="Имя пользователя" asp-for="Nickname" type="text" required />
-                <span asp-validation-for="Nickname"></span>
+                <span asp-validation-for="Nickname" class="warning"></span>
             </div>
-            <div class="mb-3">
+            <div class="mb-4">
                 <label asp-for="Email">Эл. почта</label>
-                <span asp-validation-for="Email"></span>
                 <input class="form-control" placeholder="Эл. почта" asp-for="Email" type="email" required />
+                <span asp-validation-for="Email" class="warning"></span>
             </div>
-            <div class="mb-3">
+            <div class="mb-4">
                 <label asp-for="Password">Пароль</label>
-                <span asp-validation-for="Password"></span>
                 <input class="form-control" placeholder="Пароль" asp-for="Password" type="password" required />
+                <span asp-validation-for="Password" class="warning"></span>
             </div>
-            <div class="mb-3">
+            <div class="mb-4">
                 <label asp-for="PasswordConfirm">Повторите пароль еще раз</label>
-                <span asp-validation-for="PasswordConfirm"></span>
                 <input class="form-control" placeholder="Пароль" asp-for="PasswordConfirm" type="password" required />
+                <span asp-validation-for="PasswordConfirm" class="warning"></span>
             </div>
-            <div class="mb-4 d-flex justify-content-end">
-                <button type="submit" class="btn btn-purple">Создать аккаунт</button>
+            <div class="mb-1 d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary btn-block">Создать аккаунт</button>
             </div>
+            <div class="d-flex justify-content-between mb-5">
+                <span>Уже есть аккаунт?</span><a class="d-block text-decoration-none" asp-action="Login" asp-controller="Account" style="color: #7B61FF !important;">Войти</a>
+            </div>
+
         </form>
     </div>
 </div>

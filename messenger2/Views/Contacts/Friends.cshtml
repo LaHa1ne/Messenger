@@ -10,40 +10,20 @@
        name="RequestVerificationToken" value="@requestToken">
 
 
-<nav class="navbar navbar-light bg-light">
+<nav class="navbar navbar-light bg-light navbar_contacts">
     <form class="container-fluid justify-content-between">
-        <a class="btn btn-outline mr-2" style="border-color: #87CEFA;" type="button" asp-area="" asp-controller="Contacts" asp-action="Friends">Друзья</a>
-        <a class="btn btn-outline mr-2" style="border-color: #87CEFA;" type="button" asp-area="" asp-controller="Contacts" asp-action="Invitations">Приглашения</a>
-        <a class="btn btn-outline mr-2" style="border-color: #87CEFA;" type="button" asp-area="" asp-controller="Contacts" asp-action="AddFriend">Добавить друга</a>
+        <button id="button_friends" class="btn btn-outline mr-2 contacts_button" style="border-color: #87CEFA;" type="button" onclick="SwitchMenuElement(this)">Друзья</button>
+        <button id="button_senders" class="btn btn-outline mr-2 contacts_button" style="border-color: #87CEFA;" type="button" onclick="SwitchMenuElement(this)">Приглашения</button>
+        <button id="button_addfriend" class="btn btn-outline mr-2 contacts_button" style="border-color: #87CEFA;" type="button" onclick="SwitchMenuElement(this)">Добавить друга</button>
     </form>
 </nav>
 
-@if (Model.StatusCode==0)
-{
-    <div class="container-fluid">
-    <ul class="list-group list-group-flush friend_list">
-        @foreach (var UserInfo in Model.UsersInfo)
-            {
-                <li class="list-group-item" name="@UserInfo.UserId">@UserInfo.Nickname<div class="float-right"><i class="bi bi-chat-left-dots chat"></i><i class="bi bi-x-lg delete_friend"></i></div></li>
-            }
-    </ul>
-    </div>
-}
-else 
-{
-    <div>@Model.Description</div>
-}
+<div id="ErrorMessageToUser" style="display: none"></div>
 
-
-
-<div class="container-fluid">
-<ul class="list-group list-group-flush">
-        <li class="list-group-item">Cras justo odio <div class="float-right"><i class="bi bi-chat-left-dots"></i><i class="bi bi-x-lg"></i></div></li>
-  <li class="list-group-item">Dapibus ac facilisis in</li>
-  <li class="list-group-item">Morbi leo risus</li>
-  <li class="list-group-item">Porta ac consectetur ac</li>
-  <li class="list-group-item">Vestibulum at eros</li>
-</ul>
+<div id="Contacts_ContentBlock">
+    @{
+        await Html.RenderPartialAsync("_FriendsList", Model);
+    }   
 </div>
 
 <button id="button1">Click</button>

@@ -1,0 +1,17 @@
+﻿@model messenger2.DataLayer.ViewModels.Contacts.UsersBriefInfoViewModel
+@if (Model.StatusCode == 0)
+{
+    <div id="EmptySenderList" style="display: none">У вас нет приглашений</div>
+    <div class="container-fluid">
+        <ul class="list-group list-group-flush sender_list">
+            @foreach (var UserInfo in Model.UsersInfo)
+            {
+                <li class="list-group-item" name="@UserInfo.UserId">@UserInfo.Nickname<div class="float-right"><i class="bi bi-check2 accept_request" onclick="AcceptFriendRequest(this)"></i><i class="bi bi-x-lg reject_request" onclick="RejectFriendRequest(this)"></i></div></li>
+            }
+        </ul>
+    </div>
+}
+else
+{
+    <div id="EmptySenderList" style="display: block">У вас нет приглашений</div>
+}

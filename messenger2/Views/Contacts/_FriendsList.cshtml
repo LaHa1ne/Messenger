@@ -1,1 +1,17 @@
-﻿
+﻿@model messenger2.DataLayer.ViewModels.Contacts.UsersBriefInfoViewModel
+@if (Model.StatusCode == 0)
+{
+    <div id="EmptyFriendList" style="display: none">У вас нет друзей :с</div>
+    <div class="container-fluid">
+        <ul class="list-group list-group-flush friend_list">
+            @foreach (var UserInfo in Model.UsersInfo)
+            {
+                <li class="list-group-item" name="@UserInfo.UserId">@UserInfo.Nickname<div class="float-right"><i class="bi bi-chat-left-dots chat"></i><i class="bi bi-x-lg delete_friend" onclick="DeleteFriend(this)"></i></div></li>
+            }
+        </ul>
+    </div>
+}
+else
+{
+    <div id="EmptyFriendList" style="display: block">У вас нет друзей :с</div>
+}

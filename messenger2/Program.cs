@@ -1,6 +1,8 @@
 using DataAccessLayer;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
+using messenger2.DataAccessLayer.Interfaces;
+using messenger2.DataAccessLayer.Repositories;
 using messenger2.Services.Implementations;
 using messenger2.Services.Interfaces;
 using Microsoft.AspNetCore.Antiforgery;
@@ -30,8 +32,12 @@ builder.Services.AddMvc(options =>
     options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute()));
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IMessageRepository, MessageRepository>();
+builder.Services.AddTransient<IChatRepository, ChatRepository>();
+
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IContactsService, ContactsService>();
+builder.Services.AddTransient<IChatsService, ChatsService>();
 
 
 var app = builder.Build();
@@ -55,5 +61,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(name: "chats",
+                pattern: "Chats/{ChatId?}",
+                defaults: new { controller = "Chats", action = "Chats" });
 
 app.Run();
