@@ -66,4 +66,8 @@ app.MapControllerRoute(name: "chats",
                 pattern: "Chats/{ChatId?}",
                 defaults: new { controller = "Chats", action = "Chats" });
 
+app.MapControllerRoute(name: "contacts",
+                pattern: "Contacts",
+                defaults: new { controller = "Contacts", action = "Contacts" });
+
 app.Run();

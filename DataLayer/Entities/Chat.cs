@@ -12,6 +12,7 @@ namespace DataLayer.Entities
         public Chat()
         {
             ChatMembers = new HashSet<User>();
+            ChatMessages = new HashSet<Message>();
         }
 
         public int ChatId { get; set; }

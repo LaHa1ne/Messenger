@@ -4,6 +4,7 @@ using messenger2.DataLayer.ViewModels.Chats;
 using messenger2.DataLayer.ViewModels.Contacts;
 using messenger2.Services.Implementations;
 using messenger2.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -11,6 +12,7 @@ using System.Text.Json;
 
 namespace messenger2.Controllers
 {
+    [Authorize]
     public class ChatsController : Controller
     {
         private readonly IChatsService _chatsService;
@@ -57,38 +59,15 @@ namespace messenger2.Controllers
         {
             int UserId = int.Parse(User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value);
             var response = await _chatsService.LoadChat(data.ChatId, UserId);
-            if (response.StatusCode == DataLayer.Enums.StatusCode.OK)
-            {
-                return Json(response);
-                //return Json(response.Data);
-                /*return Json(new SelectedChatDTO()
-                {
-                    ChatId = data.ChatId,
-                    Name = response.Data.Name,
-                    MessageList = a.ViewData,
-                    MembersList = PartialView("_ChatMembers", response.Data.Members),
-                });*/
-                /*return Json(new
-                {
-                    Name = response.Data.Name,
-                    MessageList = PartialView("_SelectedChat", response.Data.Messages),
-                    MembersList = PartialView("_ChatMembers", response.Data.Members),
-                    StatusCode = 200,
-                    Description = response.Description
-                });*/
-                /*var res = new BaseRepsonse<int>()
-                {
-                    Data = 1,
-                    Description = "Приглашение отправлено",
-                    StatusCode = DataLayer.Enums.StatusCode.OK
-                };
-                return Json(res);*/
-            }
-            return Json(new
-            {
-                StatusCode = 502,
-                Description = response.Description
-            });
+            return Json(response);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> LoadMoreMessages([FromBody] FirstMessageDTO data)
+        {
+            int UserId = int.Parse(User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            var response = await _chatsService.LoadMoreMessages(data.ChatId, data.FirstMessageId, UserId);
+            return Json(response);
         }
     }
 }

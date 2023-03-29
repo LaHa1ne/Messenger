@@ -1,5 +1,5 @@
 ﻿@model messenger2.DataLayer.DTO.ChatDTO
-<ul class="list-group list-group-flush member_list">
+<ul class="list-group list-group-flush member_list" id="chat_members_list">
     @foreach (var member in Model.Members)
     {
         <li class="list-group-item member" name="@member.UserId">

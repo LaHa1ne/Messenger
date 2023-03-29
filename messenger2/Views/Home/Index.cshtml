@@ -18,39 +18,3 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
-
-
-
-
-<button id="button1">Click</button>
-<div id="ii" name="eee">    </div>
-<div id="emptyDiv"></div>
-@section scripts{
-    <script>
-        $(document).ready(function () {
-            $("#button1").on('click', function () {
-                //$.get("/home/MyJson",function(data){
-                //$("#emptyDiv").html(data.def)
-                //});
-                alert("fff");
-                var el = $("#ii");
-                //var model={ UserId: $(el).attr("name")};
-                var data = { UserId: "some data" };
-                $.ajax({
-                    url: '@Url.RouteUrl(new{action="MyJson", controller="Home"})',
-                    //url: '/contacts/del',
-                    data: JSON.stringify(data),
-                    headers:
-    {
-        "RequestVerificationToken": $('#RequestVerificationToken').val()
-    },
-                    type: "POST",
-                    dataType: "json",
-                    contentType: "application/json"
-                });
-            });
-
-        });
-
-    </script>
-}

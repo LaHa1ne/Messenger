@@ -13,7 +13,7 @@ namespace messenger2.DataAccessLayer.Interfaces
     {
         Task<ChatDTO> LoadChat(int ChatId, int num_messages_to_load, int UserId);
 
-        Task<MessageListDTO> LoadMoreMessages(int ChatId, int num_messages_to_load, int LastMessageId, int UserId);
+        Task<MessageListDTO> LoadMoreMessages(int ChatId, int num_messages_to_load, int FirstMessageId, int UserId);
 
         Task<bool> AddMessage(int ChatId, Message message);
 

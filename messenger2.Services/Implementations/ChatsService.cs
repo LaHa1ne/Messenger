@@ -29,7 +29,7 @@ namespace messenger2.Services.Implementations
         {
             try
             {
-                var chatDTO = await _chatRepository.LoadChat(ChatId, num_messages_to_load:40, UserId);
+                var chatDTO = await _chatRepository.LoadChat(ChatId, num_messages_to_load:4, UserId);
 
                 return new BaseRepsonse<ChatDTO>()
                 {
@@ -49,11 +49,11 @@ namespace messenger2.Services.Implementations
             }
         }
 
-        public async Task<BaseRepsonse<MessageListDTO>> LoadMoreMessages(int ChatId, int LastMessageId, int UserId)
+        public async Task<BaseRepsonse<MessageListDTO>> LoadMoreMessages(int ChatId, int FirstMessageId, int UserId)
         {
             try
             {
-                var messageListDTO = await _chatRepository.LoadMoreMessages(ChatId,num_messages_to_load:20, LastMessageId, UserId);
+                var messageListDTO = await _chatRepository.LoadMoreMessages(ChatId,num_messages_to_load:2, FirstMessageId, UserId);
 
                 return new BaseRepsonse<MessageListDTO>()
                 {

@@ -11,9 +11,11 @@ using messenger2.Models;
 using messenger2.DataLayer.DTO;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using messenger2.DataLayer.Responses;
+using Microsoft.AspNetCore.Authorization;
 
 namespace messenger2.Controllers
 {
+    [Authorize]
     public class ContactsController : Controller
     {
         private readonly IContactsService _contactsService;
@@ -25,7 +27,7 @@ namespace messenger2.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Friends()
+        public async Task<IActionResult> Contacts()
         {
             int UserId = int.Parse(User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value);
             var response = await _contactsService.GetFriends(UserId);
@@ -52,16 +54,10 @@ namespace messenger2.Controllers
             int UserId = int.Parse(User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value);
             var response = await _contactsService.GetFriends(UserId);
 
-
             var UsersInfo = new UsersBriefInfoViewModel()
             {
                 UsersInfo = response.Data,
-                StatusCode = response.StatusCode switch
-                {
-                    DataLayer.Enums.StatusCode.OK => 0,
-                    DataLayer.Enums.StatusCode.UsersNotExists => 1,
-                    _ => 2
-                },
+                StatusCode = (int)response.StatusCode,
                 Description = response.Description
             };
 
@@ -78,12 +74,7 @@ namespace messenger2.Controllers
             var UsersInfo = new UsersBriefInfoViewModel()
             {
                 UsersInfo = response.Data,
-                StatusCode = response.StatusCode switch
-                {
-                    DataLayer.Enums.StatusCode.OK => 0,
-                    DataLayer.Enums.StatusCode.UsersNotExists => 1,
-                    _ => 2
-                },
+                StatusCode = (int)response.StatusCode,
                 Description = response.Description
             };
 

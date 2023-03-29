@@ -27,21 +27,11 @@ namespace messenger2.Services.Implementations
         {
             try
             {
-                var nicknameExists = await _userRepository.IsUserExistsByNickname(registrationModel.Nickname);
-                if (nicknameExists)
-                {
-                    return new BaseRepsonse<bool>()
-                    {
-                        Data = true,
-                        Description = "Имя пользователя уже занято",
-                        StatusCode = DataLayer.Enums.StatusCode.UserExists
-                    };
-                }
-
+                var IsUserExists = await _userRepository.IsUserExistsByNickname(registrationModel.Nickname);
                 return new BaseRepsonse<bool>()
                 {
-                    Data = false,
-                    Description = "Имя пользователя не занято",
+                    Data = IsUserExists,
+                    Description = IsUserExists ? "Имя пользователя уже занято" : "Имя пользователя не занято",
                     StatusCode = DataLayer.Enums.StatusCode.OK
                 };
             }
@@ -61,21 +51,11 @@ namespace messenger2.Services.Implementations
         {
             try
             {
-                var emailExists = await _userRepository.IsUserExistsByEmail(registrationModel.Email);
-                if (emailExists)
-                {
-                    return new BaseRepsonse<bool>()
-                    {
-                        Data = true,
-                        Description = "Эл. почта уже занята",
-                        StatusCode = DataLayer.Enums.StatusCode.UserExists
-                    };
-                }
-
+                var IsUserExists = await _userRepository.IsUserExistsByEmail(registrationModel.Email);
                 return new BaseRepsonse<bool>()
                 {
-                    Data = false,
-                    Description = "Эл. почта не занята",
+                    Data = IsUserExists,
+                    Description = IsUserExists ? "Эл. почта уже занята" : "Эл. почта не занята",
                     StatusCode = DataLayer.Enums.StatusCode.OK
                 };
             }
@@ -96,18 +76,6 @@ namespace messenger2.Services.Implementations
         {
             try
             {
-                var emailExists = await _userRepository.IsUserExistsByEmail(registrationModel.Email);
-                var nicknameExists = await _userRepository.IsUserExistsByNickname(registrationModel.Nickname);
-                if (emailExists || nicknameExists)
-                {
-                    string Description = emailExists && nicknameExists ? "Имя пользователя и эл. почта уже заняты" : emailExists ? "Эл. почта уже занята" : "Имя пользователя уже занято";
-                    return new BaseRepsonse<ClaimsIdentity>()
-                    {
-                        Description = Description,
-                        StatusCode = DataLayer.Enums.StatusCode.UserExists
-                    };
-                }
-
                 var user = new User()
                 {
                     Email = registrationModel.Email,
@@ -140,7 +108,7 @@ namespace messenger2.Services.Implementations
         {
             try
             {
-                var user = await _userRepository.GetByEmailAndPassword(loginModel.Email, HashPasswordHelper.GetHashPassword(loginModel.Password));
+                var user = await _userRepository.GetUserByEmailAndPassword(loginModel.Email, HashPasswordHelper.GetHashPassword(loginModel.Password));
                 if (user == null)
                 {
                     return new BaseRepsonse<ClaimsIdentity>() { Description = "Неправильная почта или пароль" };

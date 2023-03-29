@@ -10,7 +10,7 @@
        name="RequestVerificationToken" value="@requestToken">
 
 
-<nav class="navbar navbar-light bg-light navbar_contacts">
+<nav class="navbar navbar-light bg-light navbar_contacts mb-2">
     <form class="container-fluid justify-content-between">
         <button id="button_friends" class="btn btn-outline mr-2 contacts_button" style="border-color: #87CEFA;" type="button" onclick="SwitchMenuElement(this)">Друзья</button>
         <button id="button_senders" class="btn btn-outline mr-2 contacts_button" style="border-color: #87CEFA;" type="button" onclick="SwitchMenuElement(this)">Приглашения</button>
@@ -18,37 +18,9 @@
     </form>
 </nav>
 
-<div id="ErrorMessageToUser" style="display: none"></div>
-
 <div id="Contacts_ContentBlock">
     @{
         await Html.RenderPartialAsync("_FriendsList", Model);
     }   
 </div>
-
-<button id="button1">Click</button>
-<div id="ii" name="eee">    </div>
-<div id="emptyDiv"></div>
-
-@section scripts{
-    <script>
-        $(document).ready(function(){
-             $("#button1").on('click',function(){
-                 $.ajax({
-            url: '/Contacts/DeleteFriend',
-        data: JSON.stringify(data),
-            headers:
-        {
-            "RequestVerificationToken": $('#RequestVerificationToken').val()
-        },
-        type: "POST",
-            dataType: "json",
-                contentType: "application/json"
-    });
-
-
-             });
-             });
-
-    </script>
-} 
+<div id="alerts"></div>

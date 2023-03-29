@@ -1,0 +1,59 @@
+﻿.container_for_friend_list, .container_for_sender_list {
+    width: 400px;
+    margin: 0 auto;
+}
+
+
+.friend_list, .sender_list {
+    display: inline-block;
+    width: 100%;
+}
+
+    .friend_list > li, .sender_list > li {
+        position: relative;
+        float: left;
+        margin-bottom: .25rem;
+        padding: .325rem 0rem .325rem 1.325rem;
+        color: #fff;
+        background: #87CEFA;
+        width: 100%;
+        display:flex;
+    }
+
+        .friend_list > li:last-child, .sender_list > li:last-child {
+            margin-bottom: 0;
+        }
+
+        .friend_list > li:before, .sender_list > li:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0.5rem;
+            background: #001deb;
+        }
+
+.friend_nickname, sender_nickname {
+    width: 75%;
+    font-weight: bold;
+}
+
+.friend_buttons, .sender_buttons{
+    width: 20%;
+}
+
+i.chat, i.delete_friend, i.accept_request, i.reject_request, i.send_request {
+    display: flex;
+    justify-content: space-around;
+    width: 40px;
+    font-size: 24px;
+}
+
+#add_friend_form {
+    width: 300px;
+    max-width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

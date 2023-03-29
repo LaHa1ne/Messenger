@@ -19,12 +19,6 @@ namespace DataAccessLayer
         public virtual DbSet<Message> Messages { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
-        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseMySql("server=localhost;user=root;password=Rb,thhNhjkm2000;database=messengerdb;",
-                new MySqlServerVersion(new Version(8, 0, 32)));
-        }*/
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());

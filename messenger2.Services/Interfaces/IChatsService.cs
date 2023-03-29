@@ -14,7 +14,7 @@ namespace messenger2.Services.Interfaces
     {
         Task<BaseRepsonse<ChatDTO>> LoadChat(int ChatId, int UserId);
 
-        Task<BaseRepsonse<MessageListDTO>> LoadMoreMessages(int ChatId, int LastMessageId, int UserId);
+        Task<BaseRepsonse<MessageListDTO>> LoadMoreMessages(int ChatId, int FirstMessageId, int UserId);
 
         Task<BaseRepsonse<ChatListDTO>> GetChatList(int UserId);
     }

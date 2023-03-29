@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using messenger2.DataLayer.DTO;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DataAccessLayer.Repositories
 {
@@ -35,9 +37,10 @@ namespace DataAccessLayer.Repositories
             return await _db.Users.FirstOrDefaultAsync(u => u.UserId == UserId);
         }
 
-        public async Task<User> GetByEmailAndPassword(string Email, string Password)
+        public async Task<User> GetUserByEmailAndPassword(string Email, string HashPassword)
         {
-            return await _db.Users.FirstOrDefaultAsync(u => u.Email.ToUpper() == Email.ToUpper() && u.Password == Password);
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToUpper() == Email.ToUpper());
+            return user != null ? user.Password == HashPassword ? user : null : null;
         }
 
         public async Task<IEnumerable<UserBriefInfoDTO>> GetFriends(int UserId)
@@ -52,7 +55,7 @@ namespace DataAccessLayer.Repositories
             return user.Senders.Select(u => new UserBriefInfoDTO(u.UserId, u.Nickname)).ToList();
         }
 
-        public async Task<int> AcceptFriendRequest(int UserId, int SenderId)
+        public async Task<bool> AcceptFriendRequest(int UserId, int SenderId)
         {
             User user = await _db.Users.Include(u => u.Friends).Include(u=>u.Senders).FirstOrDefaultAsync(u => u.UserId == UserId);
             User sender = await _db.Users.Include(u => u.Friends).Include(u => u.Senders).FirstOrDefaultAsync(u => u.UserId == SenderId);
@@ -61,15 +64,15 @@ namespace DataAccessLayer.Repositories
             user.Friends.Add(sender);
             sender.Friends.Add(user);
             await _db.SaveChangesAsync();
-            return user.Senders.Count;
+            return true;
         }
-        public async Task<int> RejectFriendRequest(int UserId, int SenderId)
+        public async Task<bool> RejectFriendRequest(int UserId, int SenderId)
         {
             User user = await _db.Users.Include(u => u.Senders).FirstOrDefaultAsync(u => u.UserId == UserId);
             User sender = await _db.Users.FirstOrDefaultAsync(u => u.UserId == SenderId);
             user.Senders.Remove(sender);
             await _db.SaveChangesAsync();
-            return user.Senders.Count;
+            return true;
         }
 
         public async Task<bool> SendFriendRequest(int SenderId, string UserNickname)
@@ -81,14 +84,14 @@ namespace DataAccessLayer.Repositories
             await _db.SaveChangesAsync();
             return true;
         }
-        public async Task<int> DeleteFriend(int UserId, int FriendId)
+        public async Task<bool> DeleteFriend(int UserId, int FriendId)
         {
             User user = await _db.Users.Include(u => u.Friends).FirstOrDefaultAsync(u => u.UserId == UserId);
             User friend = await _db.Users.Include(u => u.Friends).FirstOrDefaultAsync(u => u.UserId == FriendId);
             user.Friends.Remove(friend);
             friend.Friends.Remove(user);
             await _db.SaveChangesAsync();
-            return user.Friends.Count;
+            return true;
         }
 
     }

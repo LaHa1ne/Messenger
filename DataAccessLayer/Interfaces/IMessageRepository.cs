@@ -11,8 +11,6 @@ namespace messenger2.DataAccessLayer.Interfaces
 {
     public interface IMessageRepository : IBaseRepository<Message>
     {
-
         Task<Message> GetByMessageId(int MessageId);
-
     }
 }

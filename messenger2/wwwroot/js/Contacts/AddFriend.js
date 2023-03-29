@@ -3,7 +3,7 @@
     if (Nickname != null && Nickname != "") {
         var token = $('#RequestVerificationToken').val();
         var data = { Nickname: Nickname };
-
+        $(".alert").alert('close')
         $.ajax({
             url: '/Contacts/SendFriendRequest',
             data: JSON.stringify(data),
@@ -15,17 +15,11 @@
             dataType: "json",
             contentType: "application/json",
             success: function (data) {
-                if (data.data == 1) {
-                    $("#user_found").css("display", "block");
+                if (data.statusCode == 200) {
+                    if (data.data) AddSuccessAlert(data.description);
+                    else AddWarningAlert(data.description);
                 }
-                else if (data.data == 0) {
-                    $("#user_not_found").css("display", "block");
-                }
-                else {
-                    $("#ErrorMessageToUser").html(data.description);
-                    $("#ErrorMessageToUser").css("display", "block");
-                }
-
+                else AddServerErrorAlert(data.statusCode, data.description); 
             },
             error: function (jqXHR, exception) {
                 var msg = '';
@@ -44,9 +38,9 @@
                 } else {
                     msg = 'Uncaught Error.\n' + jqXHR.responseText;
                 }
-                $('#ErrorMessageToUser').html(msg);
-                $("#ErrorMessageToUser").css("display", "block");
+                AddServerErrorAlert(jqXHR.status, msg);
             }
         });
+        AutocloseAlert();
     }
 };

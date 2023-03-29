@@ -14,14 +14,11 @@
         dataType: "json",
         contentType: "application/json",
         success: function (data) {
-            if (data.data < 0) {
-                $("#ErrorMessageToUser").html(data.description);
-                $("#ErrorMessageToUser").css("display", "block");;
+            if (data.statusCode == 200) {
+                li.css("display", "none");
+                if ($(".sender_list li:visible").length == 0) { $("#EmptySenderList").css("display", "block"); }
             }
-            else {
-                li.hide();
-                if (data.data == 0) { $("#EmptySenderList").css("display", "none"); }
-            }
+            else AddServerErrorAlert(data.statusCode, data.description); 
         },
         error: function (jqXHR, exception) {
             var msg = '';
@@ -40,10 +37,10 @@
             } else {
                 msg = 'Uncaught Error.\n' + jqXHR.responseText;
             }
-            $('#ErrorMessageToUser').html(msg);
-            $("#ErrorMessageToUser").css("display", "block");
+            AddServerErrorAlert(jqXHR.status, msg);
         }
     });
+    AutocloseAlert();
 };
 
 function RejectFriendRequest(obj) {
@@ -62,14 +59,11 @@ function RejectFriendRequest(obj) {
         dataType: "json",
         contentType: "application/json",
         success: function (data) {
-            if (data.data < 0) {
-                $("#ErrorMessageToUser").html(data.description);
-                $("#ErrorMessageToUser").css("display", "block");;
+            if (data.statusCode == 200) {
+                li.css("display", "none");
+                if ($(".sender_list li:visible").length == 0) { $("#EmptySenderList").css("display", "block"); }
             }
-            else {
-                li.hide();
-                if (data.data == 0) { $("#EmptySenderList").css("display", "none"); }
-            }
+            else AddServerErrorAlert(data.statusCode, data.description);
         },
         error: function (jqXHR, exception) {
             var msg = '';
@@ -88,8 +82,8 @@ function RejectFriendRequest(obj) {
             } else {
                 msg = 'Uncaught Error.\n' + jqXHR.responseText;
             }
-            $('#ErrorMessageToUser').html(msg);
-            $("#ErrorMessageToUser").css("display", "block");
+            AddServerErrorAlert(jqXHR.status, msg);
         }
     });
+    AutocloseAlert();
 };

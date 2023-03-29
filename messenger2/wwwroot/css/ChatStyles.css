@@ -104,6 +104,11 @@ ul[name="empty_message_list"]
     display: none;
 }
 
+ul[name="empty_members_list"]
+{
+    display: none;
+}
+
 .message {
     padding: 10px;
     margin-bottom: 30px;
@@ -162,14 +167,6 @@ ul[name="empty_message_list"]
     font-size: 24px;
 }
 
-
-
-
-
-
-
-
-
 .chat_members_caption {
     font-weight: bold;
     font-size: 130%;
@@ -197,3 +194,5 @@ ul[name="empty_message_list"]
 li.member {
     padding-left: 1em;
 }
+
+

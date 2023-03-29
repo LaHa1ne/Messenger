@@ -1,17 +1,18 @@
 ﻿@model messenger2.DataLayer.ViewModels.Contacts.UsersBriefInfoViewModel
-@if (Model.StatusCode == 0)
+@if (Model.UsersInfo.Count()==0)
 {
-    <div id="EmptySenderList" style="display: none">У вас нет приглашений</div>
-    <div class="container-fluid">
-        <ul class="list-group list-group-flush sender_list">
-            @foreach (var UserInfo in Model.UsersInfo)
-            {
-                <li class="list-group-item" name="@UserInfo.UserId">@UserInfo.Nickname<div class="float-right"><i class="bi bi-check2 accept_request" onclick="AcceptFriendRequest(this)"></i><i class="bi bi-x-lg reject_request" onclick="RejectFriendRequest(this)"></i></div></li>
-            }
-        </ul>
-    </div>
+    <div class="text-center" id="EmptySenderList" style="display: block">У вас нет приглашений</div>
 }
 else
 {
-    <div id="EmptySenderList" style="display: block">У вас нет приглашений</div>
+     <div class="text-center" id="EmptySenderList" style="display: none">У вас нет приглашений</div>
 }
+
+<div class="container_for_sender_list center-block">
+    <ul class="list-group list-group-flush sender_list">
+        @foreach (var UserInfo in Model.UsersInfo)
+        {
+            <li class="list-group-item justify-content-around" name="@UserInfo.UserId"><div class="d-inline-block sender_nickname">@UserInfo.Nickname</div><div class="d-inline-block d-flex justify-content-around sender_buttons"><i class="bi bi-check2 accept_request" onclick="AcceptFriendRequest(this)"></i><i class="bi bi-x-lg reject_request" onclick="RejectFriendRequest(this)"></i></div></li>
+        }
+    </ul>
+</div>

@@ -29,19 +29,10 @@ namespace messenger2.Services.Implementations
             try
             {
                 var Friends = await _userRepository.GetFriends(UserId);
-                if (Friends.Count()==0)
-                {
-                    return new BaseRepsonse<IEnumerable<UserBriefInfoDTO>>()
-                    {
-                        Description = "У вас нет друзей :с",
-                        StatusCode = DataLayer.Enums.StatusCode.UsersNotExists
-                    };
-                }
-
                 return new BaseRepsonse<IEnumerable<UserBriefInfoDTO>>()
                 {
                     Data = Friends,
-                    Description = "Друзья найдены",
+                    Description = Friends.Count() == 0 ? "Пользователь не имеет друзей" : "Список друзей получен",
                     StatusCode = DataLayer.Enums.StatusCode.OK
                 };
             }
@@ -61,19 +52,10 @@ namespace messenger2.Services.Implementations
             try
             {
                 var Senders = await _userRepository.GetSenders(UserId);
-                if (Senders.Count() == 0)
-                {
-                    return new BaseRepsonse<IEnumerable<UserBriefInfoDTO>>()
-                    {
-                        Description = "У вас нет приглашений",
-                        StatusCode = DataLayer.Enums.StatusCode.UsersNotExists
-                    };
-                }
-
                 return new BaseRepsonse<IEnumerable<UserBriefInfoDTO>>()
                 {
                     Data = Senders,
-                    Description = "Приглашения найдены",
+                    Description = Senders.Count() == 0 ? "Пользователь не имеет приглашений" : "Список приглашений получен",
                     StatusCode = DataLayer.Enums.StatusCode.OK
                 };
             }
@@ -88,94 +70,94 @@ namespace messenger2.Services.Implementations
             }
         }
 
-        public async Task<BaseRepsonse<int>> AcceptFriendRequest(int UserId, int SenderId)
+        public async Task<BaseRepsonse<bool>> AcceptFriendRequest(int UserId, int SenderId)
         {
             try
             {
-                var num_senders = await _userRepository.AcceptFriendRequest(UserId, SenderId);
-
-                return new BaseRepsonse<int>()
+                return new BaseRepsonse<bool>()
                 {
-                    Data = num_senders,
+                    Data = await _userRepository.AcceptFriendRequest(UserId, SenderId),
                     Description = "Приглашение в друзья принято",
                     StatusCode = DataLayer.Enums.StatusCode.OK
                 };
             }
             catch (Exception ex)
             {
-                return new BaseRepsonse<int>()
+                return new BaseRepsonse<bool>()
                 {
-                    Data = -1,
                     Description = ex.Message,
                     StatusCode = StatusCode.InternalServerError
                 };
             }
         }
-        public async Task<BaseRepsonse<int>> RejectFriendRequest(int UserId, int SenderId)
+        public async Task<BaseRepsonse<bool>> RejectFriendRequest(int UserId, int SenderId)
         {
             try
             {
-                var num_senders = await _userRepository.RejectFriendRequest(UserId, SenderId);
-
-                return new BaseRepsonse<int>()
+                return new BaseRepsonse<bool>()
                 {
-                    Data = num_senders,
+                    Data = await _userRepository.RejectFriendRequest(UserId, SenderId),
                     Description = "Приглашение в друзья отклонено",
                     StatusCode = DataLayer.Enums.StatusCode.OK
                 };
             }
             catch (Exception ex)
             {
-                return new BaseRepsonse<int>()
+                return new BaseRepsonse<bool>()
                 {
-                    Data = -1,
                     Description = ex.Message,
                     StatusCode = StatusCode.InternalServerError
                 };
             }
         }
-        public async Task<BaseRepsonse<int>> SendFriendRequest(int SenderId, string UserNickname)
+        public async Task<BaseRepsonse<bool>> SendFriendRequest(int SenderId, string UserNickname)
         {
             try
             {
-                var is_exist = await _userRepository.SendFriendRequest(SenderId, UserNickname);
-
-                return new BaseRepsonse<int>()
+                var sender = await _userRepository.GetByUserId(SenderId);
+                if (sender.Nickname == UserNickname)
                 {
-                    Data = is_exist?1:0,
-                    Description = is_exist ? "Приглашение отправлено" : "Пользователя с таким никнеймом не существует",
+                    return new BaseRepsonse<bool>()
+                    {
+                        Data = false,
+                        Description = "Нельзя добавить в друзья себя",
+                        StatusCode = DataLayer.Enums.StatusCode.OK
+                    };
+                }
+
+                var IsSuccess = await _userRepository.SendFriendRequest(SenderId, UserNickname);
+                return new BaseRepsonse<bool>()
+                {
+                    Data = IsSuccess,
+                    Description = IsSuccess ? "Запрос успешно отправлен" : "Пользователя с таким никнеймом не существует",
                     StatusCode = DataLayer.Enums.StatusCode.OK
                 };
             }
             catch (Exception ex)
             {
-                return new BaseRepsonse<int>()
+                return new BaseRepsonse<bool>()
                 {
-                    Data = -1,
                     Description = ex.Message,
                     StatusCode = StatusCode.InternalServerError
                 };
             }
         }
 
-        public async Task<BaseRepsonse<int>> DeleteFriend(int UserId, int FriendId)
+        public async Task<BaseRepsonse<bool>> DeleteFriend(int UserId, int FriendId)
         {
             try
             {
-                var num_friends = await _userRepository.DeleteFriend(UserId, FriendId);
-
-                return new BaseRepsonse<int>()
+                return new BaseRepsonse<bool>()
                 {
-                    Data = num_friends,
+                    Data = await _userRepository.DeleteFriend(UserId, FriendId),
                     Description = "Пользователь удален из друзей",
                     StatusCode = DataLayer.Enums.StatusCode.OK
                 };
             }
             catch (Exception ex)
             {
-                return new BaseRepsonse<int>()
+                return new BaseRepsonse<bool>()
                 {
-                    Data = -1,
                     Description = ex.Message,
                     StatusCode = StatusCode.InternalServerError
                 };

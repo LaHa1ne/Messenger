@@ -62,13 +62,13 @@
                         <li class="list-group-item message system_message" name="empty_system_message">
                             <span class="message_text"></span>
                         </li>
-                        <li class="list-group-item message message my_message" name="empty_my_message">
+                        <li class="list-group-item message my_message" name="empty_my_message">
                             <span class="nickname"></span>
                             <span class="message_date"></span>
                             <br>
                             <span class="message_text"></span>
                         </li>
-                         <li class="list-group-item message user_message" name="empty_user_message">
+                        <li class="list-group-item message user_message" name="empty_user_message">
                             <span class="nickname"></span>
                             <span class="message_date"></span>
                             <br>
@@ -81,7 +81,7 @@
                      }
                      else
                     {
-                        <button type="button" class="btn btn-secondary btn-sm mx-auto" id="load_more_messages">Загрузить больше</button>
+                        <button type="button" class="btn btn-secondary btn-sm mx-auto" id="load_more_messages" onclick="LoadMoreMessages()">Загрузить больше</button>
                         <ul class="list-group list-group-flush message_list" name="" id="selected_chat_messages">
                             <li class="list-group-item message message my_message" name="">
                             <span class="nickname"></span>
@@ -111,10 +111,20 @@
                 Участники
             </div>
             <div class="chat_members_list_container">
+                <ul class="list-group list-group-flush member_list" name="empty_members_list">
+                    <li class="list-group-item member" name="empty_member">
+                        <span class="nickname" name=""></span>
+                    </li>
+                </ul>
                 @if (Model.SelectedChat != null) 
                      {
                         await Html.RenderPartialAsync("_ChatMembers", Model.SelectedChat);
                      }
+                else
+                    {
+                    <ul class="list-group list-group-flush member_list" name="" id="chat_members_list">
+                    </ul>
+                    }
             </div>
         </div>
     </div>
