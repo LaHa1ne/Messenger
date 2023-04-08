@@ -11,7 +11,7 @@ else
     <ul class="list-group list-group-flush friend_list">
         @foreach (var UserInfo in Model.UsersInfo)
         {
-            <li class="list-group-item justify-content-around" name="@UserInfo.UserId"><div class="d-inline-block friend_nickname">@UserInfo.Nickname</div><div class="d-inline-block d-flex justify-content-around friend_buttons"><i class="bi bi-chat-left-dots chat"></i><i class="bi bi-x-lg delete_friend" onclick="DeleteFriend(this)"></i></div></li>
+            <li class="list-group-item justify-content-around" name="@UserInfo.UserId"><div class="d-inline-block friend_nickname">@UserInfo.Nickname</div><div class="d-inline-block d-flex justify-content-around friend_buttons"><i class="bi bi-chat-left-dots chat" onclick="LoadChatWithFriend(@UserInfo.UserId)"></i><i class="bi bi-x-lg delete_friend" onclick="DeleteFriend(this)"></i></div></li>
         }
     </ul>
 </div>

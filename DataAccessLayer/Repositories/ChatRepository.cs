@@ -50,6 +50,49 @@ namespace messenger2.DataAccessLayer.Repositories
             return chatDTO;
         }
 
+        public async Task<ChatDTO> LoadPersonalChatWithFriend(User Friend, int num_messages_to_load, User User)
+        {
+            var chat = await _db.Chats.Include(c => c.ChatMembers).Include(c => c.ChatMessages.Where(m => m.IsDeleted != true).OrderByDescending(m => m.Date).Take(num_messages_to_load + 1)).FirstOrDefaultAsync(c => c.ChatMembers.Contains(Friend) && c.ChatMembers.Contains(User));
+            if (chat == null)
+            {
+                chat = new Chat()
+                {
+                    Name = "",
+                    Type = ChatType.Personal,
+                    ChatCreator = User,
+                    ChatMembers = new HashSet<User>(2) { User, Friend }
+                };
+                await Create(chat);
+            }
+
+            var chatDTO = new ChatDTO(chat.ChatMessages.Count(), chat.ChatMembers.Count())
+            {
+                ChatId = chat.ChatId,
+                Name = chat.ChatMembers.FirstOrDefault(u => u.UserId != User.UserId).Nickname,
+                HasMoreMessages = chat.ChatMessages.Count() > num_messages_to_load
+            };
+
+            foreach (var message in chat.ChatMessages.Reverse().TakeLast(num_messages_to_load))
+            {
+                chatDTO.Messages.Add(new MessageBriefInfoDTO()
+                {
+                    MessageId = message.MessageId,
+                    Nickname = message.MessageCreator != null ? message.MessageCreator.Nickname : "",
+                    Text = message.Text,
+                    Date = message.Date,
+                    IsSystem = message.IsSystem,
+                    IsMine = message.MessageCreatorId == User.UserId ? true : false
+                });
+            }
+
+            foreach (var member in chat.ChatMembers)
+            {
+                chatDTO.Members.Add(new UserBriefInfoDTO(member.UserId, member.Nickname));
+            }
+
+            return chatDTO;
+        }
+
         public async Task<MessageListDTO> LoadMoreMessages(int ChatId, int num_messages_to_load, int FirstMessageId, int UserId)
         {
             var chat = await _db.Chats.Include(c => c.ChatMembers).Include(c => c.ChatMessages.Where(m => m.IsDeleted != true && m.MessageId < FirstMessageId).OrderByDescending(m => m.Date).Take(num_messages_to_load+1)).FirstOrDefaultAsync(c => c.ChatId == ChatId);
@@ -80,10 +123,10 @@ namespace messenger2.DataAccessLayer.Repositories
 
         public async Task<IEnumerable<ChatBriefInfoDTO>> GetPersonalChats(int UserId)
         {
-            var user = await _db.Users.Include(u => u.Chats.Where(c => c.Type == ChatType.Personal)).ThenInclude(c => c.ChatMembers.Where(u => u.UserId != UserId)).Include(u => u.Chats.Where(c => c.Type == ChatType.Personal)).ThenInclude(c => c.ChatMessages.Where(m => m.IsDeleted != true).OrderByDescending(m => m.Date).Take(1)).FirstOrDefaultAsync(u => u.UserId == UserId);
+            var user = await _db.Users.Include(u => u.Chats.Where(c => c.Type == ChatType.Personal && c.ChatMessages.Count > 0)).ThenInclude(c => c.ChatMembers.Where(u => u.UserId != UserId)).Include(u => u.Chats.Where(c => c.Type == ChatType.Personal && c.ChatMessages.Count > 0)).ThenInclude(c => c.ChatMessages.Where(m => m.IsDeleted != true).OrderByDescending(m => m.Date).Take(1)).FirstOrDefaultAsync(u => u.UserId == UserId);
 
-            var chatList = new List<ChatBriefInfoDTO>(user.Chats.Count(c => c.Type == ChatType.Personal));
-            foreach (var chat in user.Chats.Where(c => c.Type == ChatType.Personal))
+            var chatList = new List<ChatBriefInfoDTO>(user.Chats.Count(c => c.Type == ChatType.Personal && c.ChatMessages.Count > 0));
+            foreach (var chat in user.Chats.Where(c => c.Type == ChatType.Personal && c.ChatMessages.Count > 0))
             {
                 var LastMessage = chat.ChatMessages.OrderByDescending(m => m.Date).FirstOrDefault(m => m.IsDeleted == false);
                 chatList.Add(new ChatBriefInfoDTO()

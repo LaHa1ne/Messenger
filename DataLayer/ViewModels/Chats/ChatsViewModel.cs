@@ -1,4 +1,5 @@
 ﻿using messenger2.DataLayer.DTO;
+using messenger2.DataLayer.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace messenger2.DataLayer.ViewModels.Chats
         public ChatListDTO ChatList { get; set; }
 
         public ChatDTO SelectedChat { get; set; }
-        public int StatusCode { get; set; }
+        public StatusCode StatusCode { get; set; }
         public string Description { get; set; }
     }
 }

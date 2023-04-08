@@ -8,7 +8,7 @@
 <input type="hidden" id="RequestVerificationToken"
        name="RequestVerificationToken" value="@requestToken">
 
-@if (Model.StatusCode == 200)
+@if ((int)Model.StatusCode == 200)
 {
     <div class="row chats_main_container">
         <div class="col chat_list_col">

@@ -3,6 +3,7 @@ using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using messenger2.DataAccessLayer.Interfaces;
 using messenger2.DataAccessLayer.Repositories;
+using messenger2.Hubs.SignalRApp;
 using messenger2.Services.Implementations;
 using messenger2.Services.Interfaces;
 using Microsoft.AspNetCore.Antiforgery;
@@ -30,6 +31,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddMvcCore().AddApiExplorer();
 builder.Services.AddMvc(options =>
     options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute()));
+
+builder.Services.AddSignalR();
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IMessageRepository, MessageRepository>();
@@ -63,11 +66,16 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(name: "chats",
-                pattern: "Chats/{ChatId?}",
+                pattern: "Chats/{FriendId?}",
                 defaults: new { controller = "Chats", action = "Chats" });
 
 app.MapControllerRoute(name: "contacts",
                 pattern: "Contacts",
                 defaults: new { controller = "Contacts", action = "Contacts" });
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("/Chats/{FriendId?}");
+});
 
 app.Run();

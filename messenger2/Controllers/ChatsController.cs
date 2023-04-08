@@ -12,7 +12,7 @@ using System.Text.Json;
 
 namespace messenger2.Controllers
 {
-    [Authorize]
+    
     public class ChatsController : Controller
     {
         private readonly IChatsService _chatsService;
@@ -23,7 +23,7 @@ namespace messenger2.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Chats(int ChatId)
+        public async Task<IActionResult> Chats(int FriendId)
         {
             int UserId = int.Parse(User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value);
             var response_ChatList = await _chatsService.GetChatList(UserId);
@@ -31,26 +31,26 @@ namespace messenger2.Controllers
             var ChatInfo = new ChatsViewModel();
             if (response_ChatList.StatusCode!= DataLayer.Enums.StatusCode.OK)
             {
-                ChatInfo.StatusCode = 502;
+                ChatInfo.StatusCode = response_ChatList.StatusCode;
                 ChatInfo.Description = response_ChatList.Description;
                 return View(ChatInfo);
             }
             ChatInfo.ChatList = response_ChatList.Data;
             ChatInfo.Description= response_ChatList.Description;
 
-            if (ChatId!=0)
+            if (FriendId!=0)
             {
-                var response_SelectedChat = await _chatsService.LoadChat(ChatId, UserId);
+                var response_SelectedChat = await _chatsService.LoadPersonalChatWithFriend(FriendId, UserId);
                 if (response_SelectedChat.StatusCode != DataLayer.Enums.StatusCode.OK)
                 {
-                    ChatInfo.StatusCode = 502;
+                    ChatInfo.StatusCode = response_ChatList.StatusCode;
                     ChatInfo.Description = response_SelectedChat.Description;
                     return View(ChatInfo);
                 }
                 ChatInfo.SelectedChat = response_SelectedChat.Data;
                 ChatInfo.Description += "/n"+response_ChatList.Description;
             }
-            ChatInfo.StatusCode = 200;
+            ChatInfo.StatusCode = response_ChatList.StatusCode;
             return View(ChatInfo);
         }
 

@@ -1,4 +1,5 @@
-﻿using messenger2.DataLayer.DTO;
+﻿using DataLayer.Entities;
+using messenger2.DataLayer.DTO;
 using messenger2.DataLayer.Responses;
 using messenger2.DataLayer.ViewModels.Account;
 using System;
@@ -13,6 +14,8 @@ namespace messenger2.Services.Interfaces
     public interface IChatsService
     {
         Task<BaseRepsonse<ChatDTO>> LoadChat(int ChatId, int UserId);
+
+        Task<BaseRepsonse<ChatDTO>> LoadPersonalChatWithFriend(int FriendId, int UserId);
 
         Task<BaseRepsonse<MessageListDTO>> LoadMoreMessages(int ChatId, int FirstMessageId, int UserId);
 

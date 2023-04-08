@@ -42,3 +42,12 @@
     });
     AutocloseAlert();
 };
+
+function LoadChatWithFriend(FriendId) {
+    /*$.ajax({
+        url: '/Chats/Chats/'+FriendId,
+        type: "GET"
+    });*/
+    window.location.href = '/Chats/' + FriendId;
+
+}

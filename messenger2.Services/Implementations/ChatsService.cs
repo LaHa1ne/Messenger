@@ -19,10 +19,12 @@ namespace messenger2.Services.Implementations
     public class ChatsService : IChatsService
     {
         private readonly IChatRepository _chatRepository;
+        private readonly IUserRepository _userRepository;
 
-        public ChatsService(IChatRepository chatRepository)
+        public ChatsService(IChatRepository chatRepository, IUserRepository userRepository)
         {
             _chatRepository = chatRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<BaseRepsonse<ChatDTO>> LoadChat(int ChatId, int UserId)
@@ -30,6 +32,32 @@ namespace messenger2.Services.Implementations
             try
             {
                 var chatDTO = await _chatRepository.LoadChat(ChatId, num_messages_to_load:4, UserId);
+
+                return new BaseRepsonse<ChatDTO>()
+                {
+                    Data = chatDTO,
+                    Description = "Инф. о чате успешно получена",
+                    StatusCode = DataLayer.Enums.StatusCode.OK
+                };
+            }
+
+            catch (Exception ex)
+            {
+                return new BaseRepsonse<ChatDTO>()
+                {
+                    Description = ex.Message,
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+        }
+
+        public async Task<BaseRepsonse<ChatDTO>> LoadPersonalChatWithFriend(int FriendId, int UserId)
+        {
+            try
+            {
+                var user = await _userRepository.GetByUserId(UserId);
+                var friend = await _userRepository.GetByUserId(FriendId);
+                var chatDTO = await _chatRepository.LoadPersonalChatWithFriend(user, num_messages_to_load: 4, friend);
 
                 return new BaseRepsonse<ChatDTO>()
                 {
